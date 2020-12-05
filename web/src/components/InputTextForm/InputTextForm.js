@@ -2,8 +2,6 @@ import { getActiveClasses } from 'get-active-classes'
 import { TextField, FieldError } from '@redwoodjs/forms'
 import { useFormContext } from 'react-hook-form'
 
-// COPY of InputText but using TextField for use with redwood forms. Maybe I should combine them back into one or otherwise try and share code between these two.
-
 const InputText = ({ type = 'text', className, name, validation }) => {
   const { errors } = useFormContext()
   return (
