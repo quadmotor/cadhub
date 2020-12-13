@@ -2,18 +2,16 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@redwoodjs/auth'
 import { navigate, routes } from '@redwoodjs/router'
 import Editor from 'rich-markdown-editor'
-
 import ImageUploader from 'src/components/ImageUploader'
 import Button from 'src/components/Button'
 import ProfileTextInput from 'src/components/ProfileTextInput'
+import PartsCell from 'src/components/PartsCell'
 
-const UserProfile = ({ user, isEditable, loading, onSave, error }) => {
+const UserProfile = ({ user, isEditable, loading, onSave, error, parts }) => {
   const { currentUser } = useAuth()
   const canEdit = currentUser?.sub === user.id
   useEffect(() => {
-    isEditable &&
-      !canEdit &&
-      navigate(routes.user2({ userName: user.userName }))
+    isEditable && !canEdit && navigate(routes.user({ userName: user.userName }))
   }, [currentUser])
   const [input, setInput] = useState({
     userName: user.userName,
@@ -67,7 +65,7 @@ const UserProfile = ({ user, isEditable, loading, onSave, error }) => {
                 className="bg-indigo-200"
                 iconName="pencil"
                 onClick={() =>
-                  navigate(routes.editUser2({ userName: user.userName }))
+                  navigate(routes.editUser({ userName: user.userName }))
                 }
               >
                 Edit Profile
@@ -92,6 +90,10 @@ const UserProfile = ({ user, isEditable, loading, onSave, error }) => {
               }
             />
           </div>
+        </div>
+        <div className="mt-10">
+          <h3 className="text-3xl text-gray-500 font-ropa-sans">Parts:</h3>
+          <PartsCell />
         </div>
       </section>
     </>

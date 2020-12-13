@@ -91,7 +91,6 @@ const MainLayout = ({ children }) => {
   useEffect(() => {
     const [key, token] = hash.slice(1).split('=')
     if (key === 'confirmation_token') {
-      console.log('confirming with', token)
       client
         .confirm(token, true)
         .then(() => {
@@ -157,7 +156,7 @@ const MainLayout = ({ children }) => {
               {isAuthenticated && data?.user?.userName ? (
                 <Link
                   className="h-full w-full"
-                  to={routes.newPart2({ userName: data?.user?.userName })}
+                  to={routes.newPart({ userName: data?.user?.userName })}
                 >
                   <Svg name="plus" className="text-indigo-300 w-full h-full" />
                 </Link>
@@ -209,16 +208,16 @@ const MainLayout = ({ children }) => {
                 horizontal: 'right',
               }}
             >
-              <div className="p-4 w-40">
-                <Link to={routes.user2({ userName: data?.user?.userName })}>
+              <div className="p-4 w-48">
+                <Link to={routes.user({ userName: data?.user?.userName })}>
                   <h3 className="text-indigo-800" style={{ fontWeight: '500' }}>
                     Hello {data?.user?.name}
                   </h3>
                 </Link>
                 <hr />
                 <br />
-                <Link to={routes.editUser2({ userName: data?.user?.userName })}>
-                  <div className="text-indigo-800">Edit Profile</div>
+                <Link to={routes.user({ userName: data?.user?.userName })}>
+                  <div className="text-indigo-800">Your Profile</div>
                 </Link>
                 <a href="#" className="text-indigo-800" onClick={logOut}>
                   Logout

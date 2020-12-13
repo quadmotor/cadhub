@@ -4,6 +4,7 @@ import { Link, navigate, routes } from '@redwoodjs/router'
 import Editor from 'rich-markdown-editor'
 
 import ImageUploader from 'src/components/ImageUploader'
+import ConfirmDialog from 'src/components/ConfirmDialog'
 import Breadcrumb from 'src/components/Breadcrumb'
 import EmojiReaction from 'src/components/EmojiReaction'
 import Button from 'src/components/Button'
@@ -14,21 +15,22 @@ const PartProfile = ({
   userPart,
   isEditable,
   onSave,
+  onDelete,
   onReaction,
   onComment,
 }) => {
   const [comment, setComment] = useState('')
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false)
   const { currentUser } = useAuth()
   const canEdit = currentUser?.sub === userPart.id
   const part = userPart?.Part
-  console.log(part)
   const emotes = countEmotes(part?.Reaction)
   const userEmotes = part?.userReactions.map(({ emote }) => emote)
   useEffect(() => {
     isEditable &&
       !canEdit &&
       navigate(
-        routes.part2({ userName: userPart.userName, partTitle: part?.title })
+        routes.part({ userName: userPart.userName, partTitle: part?.title })
       )
   }, [currentUser])
   const [input, setInput] = useState({
@@ -54,7 +56,7 @@ const PartProfile = ({
       return
     }
     navigate(
-      routes.editPart2({ userName: userPart?.userName, partTitle: part?.title })
+      routes.editPart({ userName: userPart?.userName, partTitle: part?.title })
     )
   }
   return (
@@ -73,7 +75,7 @@ const PartProfile = ({
             width={300}
           />
           <h4 className="text-indigo-800 text-xl underline text-right py-4">
-            <Link to={routes.user2({ userName: userPart?.userName })}>
+            <Link to={routes.user({ userName: userPart?.userName })}>
               {userPart?.name}
             </Link>
           </h4>
@@ -100,7 +102,7 @@ const PartProfile = ({
             })}
           >
             <Button
-              className="mt-4 ml-auto shadow-md hover:shadow-lg bg-indigo-200"
+              className="mt-4 ml-auto shadow-md hover:shadow-lg bg-indigo-200 w-full justify-end"
               shouldAnimateHover
               iconName="terminal"
               onClick={() => {}}
@@ -109,15 +111,27 @@ const PartProfile = ({
             </Button>
           </Link>
           {canEdit && (
-            <Button
-              className="mt-4 ml-auto shadow-md hover:shadow-lg bg-indigo-200 relative z-20"
-              shouldAnimateHover
-              iconName={isEditable ? 'save' : 'pencil'}
-              onClick={onEditSaveClick}
-            >
-              {isEditable ? 'Save Details' : 'Edit Details'}
-            </Button>
+            <>
+              <Button
+                className="mt-4 ml-auto shadow-md hover:shadow-lg bg-indigo-200 relative z-20 w-full justify-end"
+                shouldAnimateHover
+                iconName={isEditable ? 'save' : 'pencil'}
+                onClick={onEditSaveClick}
+              >
+                {isEditable ? 'Save Details' : 'Edit Details'}
+              </Button>
+              <Button
+                className="mt-4 ml-auto shadow-md hover:shadow-lg bg-red-200 relative z-20 w-full justify-end"
+                shouldAnimateHover
+                iconName={'trash'}
+                onClick={() => setIsConfirmDialogOpen(true)}
+                type="danger"
+              >
+                Delete
+              </Button>
+            </>
           )}
+          {/* gray overlay */}
           {isEditable && (
             <div className="absolute inset-0 bg-gray-300 opacity-75 z-10 transform scale-x-110 -ml-1 -mt-2" />
           )}
@@ -177,7 +191,7 @@ const PartProfile = ({
                     </div>
                     <div className="ml-4 font-roboto">
                       <div className="text-gray-800 font-bold text-lg mb-1">
-                        <Link to={routes.user2({ userName: user?.userName })}>
+                        <Link to={routes.user({ userName: user?.userName })}>
                           {user?.userName}
                         </Link>
                       </div>
@@ -216,6 +230,12 @@ const PartProfile = ({
           )}
         </section>
       </div>
+      <ConfirmDialog
+        open={isConfirmDialogOpen}
+        onClose={() => setIsConfirmDialogOpen(false)}
+        onConfirm={onDelete}
+        message="Are you sure you want to delete? This action cannot be undone."
+      />
     </>
   )
 }
