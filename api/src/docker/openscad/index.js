@@ -1,6 +1,7 @@
 var express = require('express')
 var app = express()
 var router = express.Router()
+app.use(express.json())
 
 const { runScad, cleanup } = require('./runScad')
 
@@ -11,10 +12,9 @@ router.use(function (req, res, next) {
   next()
 })
 
-const main = 'cube([10,10,10]);'
-
 router.get('/', async function (req, res) {
-  const { result, tempFile } = await runScad({ main })
+  const { file, settings } = req.body
+  const { result, tempFile } = await runScad({ file, settings })
   console.log(`got result in route: ${result}, file is: ${tempFile}`)
   res.sendFile(`/home/rendering/${tempFile}/output.png`)
   res.on('finish', () => {

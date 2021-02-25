@@ -4,13 +4,15 @@ const { resolve } = require('path')
 const { writeFile } = promises
 const { nanoid } = require('nanoid')
 
-module.exports.runScad = async (files) => {
+module.exports.runScad = async ({ file, settings }) => {
   const tempFile = nanoid()
-  console.log(`file to write: ${files.main}`)
+  console.log(`file to write: ${file}`)
+  const { size } = settings
+  const { x, y } = size || { x: 500, y: 500 }
   await runCommand(`mkdir ${tempFile}`)
-  await writeFile(`./${tempFile}/main.scad`, files.main)
+  await writeFile(`./${tempFile}/main.scad`, file)
   const result = await new Promise((resolve, reject) => {
-    const command = `xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" openscad -o ./${tempFile}/output.png --imgsize=500,500 ./${tempFile}/main.scad`
+    const command = `xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" openscad -o ./${tempFile}/output.png --imgsize=${x},${y} ./${tempFile}/main.scad`
     exec(command, (error, stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`)
