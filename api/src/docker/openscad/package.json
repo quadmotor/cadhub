@@ -1,0 +1,12 @@
+{
+  "name": "openscad-endpoint",
+  "version": "0.0.1",
+  "description": "endpoint for openscad",
+  "main": "index.js",
+  "author": "Kurt Hutten <kurt@kurthutten.com>",
+  "license": "",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nanoid": "^3.1.20"
+  }
+}
