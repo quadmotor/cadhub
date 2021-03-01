@@ -1,5 +1,5 @@
-import { initialize } from 'src/cascade/js/MainPage/CascadeMain'
-import { monacoEditor } from 'src/cascade/js/MainPage/CascadeState'
+import { CascadeEnvironment } from "src/cascade/js/MainPage/CascadeView";
+import { setThreejsViewport } from "src/cascade/js/MainPage/CascadeState";
 
 class CascadeController {
   _hasInitialised = false
@@ -28,21 +28,21 @@ class CascadeController {
     this.incomingOnCodeChang(code)
   }
 
-  initialise(onCodeChange, code) {
-    const onInit = () => {
-      const editor = monacoEditor
-      editor.setValue(code)
-      editor.evaluateCode(false)
-    }
-    // only inits on first call, after that it just updates the editor and revaluates code, maybe should rename?
-    this.incomingOnCodeChang = onCodeChange
-    if (!this._hasInitialised) {
-      new initialize(this.controllerOnCodeChange, code, onInit)
-      this._hasInitialised = true
-      return
-    }
-    onInit()
-  }
+  // initialise(onCodeChange, code) {
+  //   const onInit = () => {
+  //     const editor = monacoEditor
+  //     editor.setValue(code)
+  //     editor.evaluateCode(false)
+  //   }
+  //   // only inits on first call, after that it just updates the editor and revaluates code, maybe should rename?
+  //   this.incomingOnCodeChang = onCodeChange
+  //   if (!this._hasInitialised) {
+  //     new initialize(this.controllerOnCodeChange, code, onInit)
+  //     this._hasInitialised = true
+  //     return
+  //   }
+  //   onInit()
+  // }
 
   capture(environment, width = 512, height = 384) {
     environment.camera.aspect = width / height;
@@ -64,6 +64,20 @@ class CascadeController {
     environment.onWindowResize();
 
     return imgBlob
+  }
+
+  view(container) {
+    // This will not work currently, needs a golden-layout instance. Could potentially spoof, see below.
+    setThreejsViewport(new CascadeEnvironment(container))
+  }
+
+  createContainer() {
+    // TODO: Possibly create a spoof of golden-layout that only implements the methods used in src/cascade/js/MainPage/CascadeView.js
+    // So that we can use the rendering logic in there.
+
+    // this.container = {
+      // methods found in CascadeView.js
+    // }
   }
 }
 
