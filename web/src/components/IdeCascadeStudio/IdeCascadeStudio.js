@@ -39,11 +39,11 @@ const IdeCascadeStudio = ({ part, saveCode, loading }) => {
     // returns a clean up function that hides the div again.
     setCode(part?.code || '')
     const onCodeChange = (code) => setCode(code)
-    CascadeController.initialise(onCodeChange, code || '')
-    const element = document.getElementById('cascade-container')
-    element.setAttribute('style', 'display: block; opacity: 100%; overflow: hidden; height: calc(100vh - 8rem)') // eslint-disable-line
+    // CascadeController.initialise(onCodeChange, code || '')
+    // const element = document.getElementById('cascade-container')
+    // element.setAttribute('style', 'display: block; opacity: 100%; overflow: hidden; height: calc(100vh - 8rem)') // eslint-disable-line
     return () => {
-      element.setAttribute('style',  'display: none; overflow: hidden; height: calc(100vh - 8rem)') // eslint-disable-line
+      // element.setAttribute('style',  'display: none; overflow: hidden; height: calc(100vh - 8rem)') // eslint-disable-line
     }
   }, [part?.code])
   const isChanges = code !== part?.code

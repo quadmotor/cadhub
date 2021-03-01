@@ -1,6 +1,6 @@
 import { useMutation, useFlash } from '@redwoodjs/web'
 import { navigate, routes } from '@redwoodjs/router'
-import IdeCascadeStudio from 'src/components/IdeCascadeStudio'
+import IdeContainer from 'src/components/IdeContainer'
 import { QUERY as UsersPartsQuery } from 'src/components/PartsOfUserCell'
 import useUser from 'src/helpers/hooks/useUser'
 
@@ -80,7 +80,7 @@ export const Success = ({ part, refetch }) => {
     forkPart({ variables: { input } })
   }
   return (
-    <IdeCascadeStudio
+    <IdeContainer
       part={part}
       saveCode={saveCode}
       loading={loading}
