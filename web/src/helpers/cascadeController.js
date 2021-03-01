@@ -3,6 +3,26 @@ import { monacoEditor } from 'src/cascade/js/MainPage/CascadeState'
 
 class CascadeController {
   _hasInitialised = false
+  defaultCode = `// Welcome to Cascade Studio!   Here are some useful functions:
+  //  Translate(), Rotate(), Scale(), Union(), Difference(), Intersection()
+  //  Box(), Sphere(), Cylinder(), Cone(), Text3D(), Polygon()
+  //  Offset(), Extrude(), RotatedExtrude(), Revolve(), Pipe(), Loft(),
+  //  FilletEdges(), ChamferEdges(),
+  //  Slider(), Button(), Checkbox()
+
+  let holeRadius = Slider("Radius", 30 , 20 , 40);
+
+  let sphere     = Sphere(50);
+  let cylinderZ  =                     Cylinder(holeRadius, 200, true);
+  let cylinderY  = Rotate([0,1,0], 90, Cylinder(holeRadius, 200, true));
+  let cylinderX  = Rotate([1,0,0], 90, Cylinder(holeRadius, 200, true));
+
+  Translate([0, 0, 50], Difference(sphere, [cylinderX, cylinderY, cylinderZ]));
+
+  Translate([-130, 0, 100], Text3D("Start Hacking"));
+
+  // Don't forget to push imported or oc-defined shapes into sceneShapes to add them to the workspace!`
+
   incomingOnCodeChang = () => {}
   controllerOnCodeChange = (code) => {
     this.incomingOnCodeChang(code)

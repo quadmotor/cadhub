@@ -1,11 +1,18 @@
 import { Responsive, WidthProvider } from 'react-grid-layout';
+import Editor from "@monaco-editor/react";
 import "../../../../node_modules/react-grid-layout/css/styles.css"
 import "../../../../node_modules/react-resizable/css/styles.css"
-import Editor from "@monaco-editor/react";
+import CascadeController from 'src/helpers/cascadeController'
+import { useState } from 'react';
+
+const cadPackageConfigs = {
+  'cascade': CascadeController,
+}
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const IdeContainer = () => {
+  const [currCadPackage, setCadPackage] = useState('cascade')
   const layouts = generateLayouts()
 
   return (<>
@@ -14,7 +21,12 @@ const IdeContainer = () => {
       layouts={layouts}
       breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0}}
       cols={{lg: 12, md: 10, sm: 6, xs: 4, xxs: 2}}>
-      <Editor height="80vh" defaultLanguage="javascript" />
+      <div key="editor">
+        <Editor
+          height="100%"
+          defaultLanguage="javascript"
+          defaultValue={ cadPackageConfigs[currCadPackage].defaultCode } />
+      </div>
       <div key="viewer" className="bg-yellow-500">b</div>
       <div key="console" className="bg-purple-500">c</div>
     </ResponsiveGridLayout>
