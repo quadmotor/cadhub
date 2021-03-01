@@ -18,7 +18,6 @@ module.exports.stlExport = async ({ file } = {}) => {
   const tempFile = await makeFile(file)
   const result = await runCommand(
     `openscad -o ./${tempFile}/output.stl ./${tempFile}/main.scad`
-    // `xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" openscad -o ./${tempFile}/output.png --imgsize=${x},${y} ./${tempFile}/main.scad`
   )
   return { result, tempFile }
 }

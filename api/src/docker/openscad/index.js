@@ -1,7 +1,10 @@
 var express = require('express')
+var cors = require('cors')
 var app = express()
 var router = express.Router()
 app.use(express.json())
+// TODO if we decide to only access this container server side, that cors won't be needed.
+app.use(cors())
 
 const { runScad, cleanup, stlExport } = require('./runScad')
 
@@ -18,7 +21,7 @@ const delayedCleanUp = (tempFile, delay = 1000) => {
   }, delay)
 }
 
-router.get('/snapshot', async function (req, res) {
+router.post('/snapshot', async function (req, res) {
   const { file, settings } = req.body
   const { result, tempFile } = await runScad({ file, settings })
   console.log(`got result in route: ${result}, file is: ${tempFile}`)
@@ -26,7 +29,7 @@ router.get('/snapshot', async function (req, res) {
   res.on('finish', () => delayedCleanUp(tempFile))
 })
 
-router.get('/export', async function (req, res) {
+router.post('/export', async function (req, res) {
   const { file } = req.body
   const { result, tempFile } = await stlExport({ file })
   console.log(`got result in route: ${result}, file is: ${tempFile}`)
