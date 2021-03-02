@@ -23,17 +23,25 @@ const delayedCleanUp = (tempFile, delay = 1000) => {
 
 router.post('/snapshot', async function (req, res) {
   const { file, settings } = req.body
-  const { result, tempFile } = await runScad({ file, settings })
-  console.log(`got result in route: ${result}, file is: ${tempFile}`)
-  res.sendFile(`/home/rendering/${tempFile}/output.png`)
+  const { error, result, tempFile } = await runScad({ file, settings })
+  if (error) {
+    res.status(400).json({ error, tempFile })
+  } else {
+    console.log(`got result in route: ${result}, file is: ${tempFile}`)
+    res.sendFile(`/home/rendering/${tempFile}/output.png`)
+  }
   res.on('finish', () => delayedCleanUp(tempFile))
 })
 
 router.post('/export', async function (req, res) {
   const { file } = req.body
-  const { result, tempFile } = await stlExport({ file })
-  console.log(`got result in route: ${result}, file is: ${tempFile}`)
-  res.sendFile(`/home/rendering/${tempFile}/output.stl`)
+  const { error, result, tempFile } = await stlExport({ file })
+  if (error) {
+    res.status(400).json({ error, tempFile })
+  } else {
+    console.log(`got result in route: ${result}, file is: ${tempFile}`)
+    res.sendFile(`/home/rendering/${tempFile}/output.stl`)
+  }
   res.on('finish', () => delayedCleanUp(tempFile, 5000))
 })
 

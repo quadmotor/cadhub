@@ -8,18 +8,28 @@ module.exports.runScad = async ({
   settings: { size: { x = 500, y = 500 } = {} } = {}, // TODO add view settings
 } = {}) => {
   const tempFile = await makeFile(file)
-  const result = await runCommand(
-    `xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" openscad -o ./${tempFile}/output.png --imgsize=${x},${y} ./${tempFile}/main.scad`
-  )
-  return { result, tempFile }
+
+  try {
+    const result = await runCommand(
+      `xvfb-run --auto-servernum --server-args "-screen 0 1024x768x24" openscad -o ./${tempFile}/output.png --imgsize=${x},${y} ./${tempFile}/main.scad`
+    )
+    return { result, tempFile }
+  } catch (error) {
+    return { error, tempFile }
+  }
 }
 
 module.exports.stlExport = async ({ file } = {}) => {
   const tempFile = await makeFile(file)
-  const result = await runCommand(
-    `openscad -o ./${tempFile}/output.stl ./${tempFile}/main.scad`
-  )
-  return { result, tempFile }
+
+  try {
+    const result = await runCommand(
+      `openscad -o ./${tempFile}/output.stl ./${tempFile}/main.scad`
+    )
+    return { result, tempFile }
+  } catch (error) {
+    return { error, tempFile }
+  }
 }
 
 module.exports.cleanup = async (file) => {
@@ -27,7 +37,7 @@ module.exports.cleanup = async (file) => {
 }
 
 async function makeFile(file) {
-  const tempFile = nanoid()
+  const tempFile = 'a' + nanoid() // 'a' ensure nothing funny happens if it start with a bad character like "-", maybe I should pick a safer id generator :shrug:
   console.log(`file to write: ${file}`)
 
   await runCommand(`mkdir ${tempFile}`)
@@ -40,7 +50,9 @@ async function runCommand(command, timeout = 5000) {
     exec(command, (error, stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`)
-        reject(`error: ${error.message}`)
+        console.log(`stderr: ${stderr}`)
+        console.log(`stdout: ${stdout}`)
+        reject(stdout || stderr) // it seems random if the message is in stdout or stderr, but not normally both
         return
       }
       if (stderr) {
